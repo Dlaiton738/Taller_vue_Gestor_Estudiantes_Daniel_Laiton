@@ -147,7 +147,22 @@
         No hay estudiantes con esos filtros
       </p>
 
-      <ul v-else>
+      <p>Total estudiantes: {{totalestudiantes()}}</p>
+      <p :class="colorpromedio()">promedio del grupo: {{promedionotas()}}</p>
+
+      <p>Estudiantes Aprobados: {{totalaprobados()}}</p>
+      <p>Estudiantes Reprobados: {{totalreprobados()}}</p>
+
+      <p>
+        Mostrando {{ estudiantesFiltrados().length }}
+        de {{ totalestudiantes() }} estudiantes
+      </p>
+
+      <p v-if="mejorEstudiante()">
+      Mejor estudiante: {{ mejorEstudiante().nombre }} - Calificación: {{ mejorEstudiante().calificacion }}
+      </p>
+
+      <ul>
         <li v-for="est in estudiantesFiltrados()" :key="est.id">
           <small>ID: {{ est.id }}</small> - {{ est.nombre }} - {{ est.carrera }}
           -

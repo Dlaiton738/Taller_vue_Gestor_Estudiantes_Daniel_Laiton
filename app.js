@@ -151,6 +151,7 @@ createApp({
             });
         },
 
+        
         colorNota(nota) {
             if (nota >= 6) {
                 return "verde";
@@ -160,27 +161,82 @@ createApp({
                 return "rojo";
             }
         },
-
+        
         aumentarCalificacion(est) {
             if (est.calificacion < 10) {
                 est.calificacion++;
             }
         },
-
+        
         disminuirCalificacion(est) {
             if (est.calificacion > 0) {
                 est.calificacion--;
             }
         },
-
+        
         eliminarEstudiante(id) {
             this.estudiantes = this.estudiantes.filter(
                 (est) => est.id !== id
             );
         },
-
+        
         borrarTodo() {
             this.estudiantes = [];
+        },
+
+        totalestudiantes(){
+            return this.estudiantes.length;
+        },
+
+        promedionotas(){
+            if(this.estudiantes.length === 0){
+                return "0.0";
+
+            }
+
+            const suma = this.estudiantes.reduce((acumulador, estudiante) => {
+                return acumulador + estudiante.calificacion;
+            }, 0); 
+
+            return (suma / this.estudiantes.length).toFixed(1);
+        
+        },
+
+        colorpromedio(){
+            const promedio = Number(this.promedionotas());
+
+            if(promedio >= 6){
+                return "verde";
+            }else{
+                return "rojo";
+            }
+        },
+
+        totalaprobados(){
+            return this.estudiantes.filter((estudiante)=>{
+                return estudiante.calificacion >= 6;
+            }).length;
+        },
+
+        totalreprobados(){
+            return this.estudiantes.filter((estudiante)=>{
+                return estudiante.calificacion < 6;
+            }).length;
+        },
+
+        mejorEstudiante(){
+            if(this.estudiantes.length === 0){
+                return null;
+            }
+
+            const mejor = this.estudiantes.reduce((acumulador, estudiante)=>{
+                if(acumulador.calificacion > estudiante.calificacion){
+                    return acumulador;
+                }else{
+                    return estudiante;
+                }   
+            });
+            return mejor;
         }
     }
 }).mount("#app");
