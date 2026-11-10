@@ -1,3 +1,4 @@
+
 const { createApp } = Vue;
 
 createApp({
@@ -23,8 +24,85 @@ createApp({
             filtroEstado: "Todos",
             formularioEnviado: false,
             errorDuplicado: false,
-            errorCupo: false,
+            errorCupo: false
         };
+    },
+
+    computed: {
+        estudiantesFiltrados() {
+            return this.estudiantes.filter((est) => {
+                const coincideCarrera =
+                    this.filtroCarrera === "Todas" ||
+                    est.carrera === this.filtroCarrera;
+
+                const coincideNombre = est.nombre
+                    .toLowerCase()
+                    .includes(this.busqueda.toLowerCase());
+
+                const coincideEstado =
+                    this.filtroEstado === "Todos" ||
+                    (this.filtroEstado === "Aprobados" &&
+                        est.calificacion >= 6) ||
+                    (this.filtroEstado === "Reprobados" &&
+                        est.calificacion < 6);
+
+                return coincideCarrera &&
+                    coincideNombre &&
+                    coincideEstado;
+            });
+        },
+
+        totalestudiantes() {
+            return this.estudiantes.length;
+        },
+
+        promedionotas() {
+            if (this.estudiantes.length === 0) {
+                return "0.0";
+            }
+
+            const suma = this.estudiantes.reduce((acumulador, estudiante) => {
+                return acumulador + estudiante.calificacion;
+            }, 0);
+
+            return (suma / this.estudiantes.length).toFixed(1);
+        },
+
+        colorpromedio() {
+            const promedio = Number(this.promedionotas);
+
+            if (promedio >= 6) {
+                return "verde";
+            } else {
+                return "rojo";
+            }
+        },
+
+        totalaprobados() {
+            return this.estudiantes.filter((estudiante) => {
+                return estudiante.calificacion >= 6;
+            }).length;
+        },
+
+        totalreprobados() {
+            return this.estudiantes.filter((estudiante) => {
+                return estudiante.calificacion < 6;
+            }).length;
+        },
+
+        mejorEstudiante() {
+            if (this.estudiantes.length === 0) {
+                return null;
+            }
+
+            return this.estudiantes.reduce((acumulador, estudiante) => {
+                if (acumulador.calificacion > estudiante.calificacion) {
+                    return acumulador;
+                } else {
+                    return estudiante;
+                }
+            });
+        }
     },
 
     methods: {
@@ -91,8 +169,6 @@ createApp({
                 return;
             }
 
-            this.errorCupo = false;
-
             this.estudiantes.push({
                 id: this.siguienteId++,
                 nombre: this.nombre.trim(),
@@ -105,6 +181,7 @@ createApp({
             this.calificacion = null;
             this.formularioEnviado = false;
             this.errorDuplicado = false;
+            this.errorCupo = false;
             this.nombreTocado = false;
             this.carreraTocada = false;
             this.calificacionTocada = false;
@@ -128,30 +205,6 @@ createApp({
             return this.cupoMaximo - inscritos;
         },
 
-        estudiantesFiltrados() {
-            return this.estudiantes.filter((est) => {
-                const coincideCarrera =
-                    this.filtroCarrera === "Todas" ||
-                    est.carrera === this.filtroCarrera;
-
-                const coincideNombre = est.nombre
-                    .toLowerCase()
-                    .includes(this.busqueda.toLowerCase());
-
-                const coincideEstado =
-                    this.filtroEstado === "Todos" ||
-                    (this.filtroEstado === "Aprobados" &&
-                        est.calificacion >= 6) ||
-                    (this.filtroEstado === "Reprobados" &&
-                        est.calificacion < 6);
-
-                return coincideCarrera &&
-                    coincideNombre &&
-                    coincideEstado;
-            });
-        },
-
-        
         colorNota(nota) {
             if (nota >= 6) {
                 return "verde";
@@ -161,82 +214,27 @@ createApp({
                 return "rojo";
             }
         },
-        
+
         aumentarCalificacion(est) {
             if (est.calificacion < 10) {
                 est.calificacion++;
             }
         },
-        
+
         disminuirCalificacion(est) {
             if (est.calificacion > 0) {
                 est.calificacion--;
             }
         },
-        
+
         eliminarEstudiante(id) {
             this.estudiantes = this.estudiantes.filter(
                 (est) => est.id !== id
             );
         },
-        
+
         borrarTodo() {
             this.estudiantes = [];
-        },
-
-        totalestudiantes(){
-            return this.estudiantes.length;
-        },
-
-        promedionotas(){
-            if(this.estudiantes.length === 0){
-                return "0.0";
-
-            }
-
-            const suma = this.estudiantes.reduce((acumulador, estudiante) => {
-                return acumulador + estudiante.calificacion;
-            }, 0); 
-
-            return (suma / this.estudiantes.length).toFixed(1);
-        
-        },
-
-        colorpromedio(){
-            const promedio = Number(this.promedionotas());
-
-            if(promedio >= 6){
-                return "verde";
-            }else{
-                return "rojo";
-            }
-        },
-
-        totalaprobados(){
-            return this.estudiantes.filter((estudiante)=>{
-                return estudiante.calificacion >= 6;
-            }).length;
-        },
-
-        totalreprobados(){
-            return this.estudiantes.filter((estudiante)=>{
-                return estudiante.calificacion < 6;
-            }).length;
-        },
-
-        mejorEstudiante(){
-            if(this.estudiantes.length === 0){
-                return null;
-            }
-
-            const mejor = this.estudiantes.reduce((acumulador, estudiante)=>{
-                if(acumulador.calificacion > estudiante.calificacion){
-                    return acumulador;
-                }else{
-                    return estudiante;
-                }   
-            });
-            return mejor;
         }
     }
 }).mount("#app");

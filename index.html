@@ -143,27 +143,27 @@
 
       <p v-if="estudiantes.length === 0">Aún no hay estudiantes</p>
 
-      <p v-else-if="estudiantesFiltrados().length === 0">
+      <p v-else-if="estudiantesFiltrados.length === 0">
         No hay estudiantes con esos filtros
       </p>
 
-      <p>Total estudiantes: {{totalestudiantes()}}</p>
-      <p :class="colorpromedio()">promedio del grupo: {{promedionotas()}}</p>
+      <p>Total estudiantes: {{totalestudiantes}}</p>
+      <p :class="colorpromedio">promedio del grupo: {{promedionotas}}</p>
 
-      <p>Estudiantes Aprobados: {{totalaprobados()}}</p>
-      <p>Estudiantes Reprobados: {{totalreprobados()}}</p>
+      <p>Estudiantes Aprobados: {{totalaprobados}}</p>
+      <p>Estudiantes Reprobados: {{totalreprobados}}</p>
 
       <p>
-        Mostrando {{ estudiantesFiltrados().length }}
-        de {{ totalestudiantes() }} estudiantes
+        Mostrando {{ estudiantesFiltrados.length }}
+        de {{ totalestudiantes}} estudiantes
       </p>
 
-      <p v-if="mejorEstudiante()">
-      Mejor estudiante: {{ mejorEstudiante().nombre }} - Calificación: {{ mejorEstudiante().calificacion }}
+      <p v-if="mejorEstudiante">
+      Mejor estudiante: {{ mejorEstudiante.nombre }} - Calificación: {{ mejorEstudiante.calificacion }}
       </p>
 
       <ul>
-        <li v-for="est in estudiantesFiltrados()" :key="est.id">
+        <li v-for="est in estudiantesFiltrados" :key="est.id">
           <small>ID: {{ est.id }}</small> - {{ est.nombre }} - {{ est.carrera }}
           -
 
